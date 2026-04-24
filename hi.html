@@ -1,0 +1,800 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Hi.</title>
+		<link
+			href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Cinzel:wght@400;500&family=Cormorant+SC:wght@300;400&display=swap"
+			rel="stylesheet"
+		/>
+		<style>
+			*,
+			*::before,
+			*::after {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+			}
+
+			:root {
+				--ink: #2a1a0e;
+				--ink-soft: #5a3e2b;
+				--ink-faint: #9a7a62;
+				--parchment: #faf4ec;
+				--parchment-deep: #f0e6d3;
+				--parchment-shadow: #e0cdb4;
+				--rose: #b03050;
+				--rose-soft: #d4607a;
+				--gold: #9a7a42;
+				--gold-light: #c8a86a;
+				--seal: #8a1a2e;
+			}
+
+			html {
+				scroll-behavior: smooth;
+			}
+
+			body {
+				background: #2a1e16;
+				font-family: "Cormorant Garamond", Georgia, serif;
+				color: var(--ink);
+				min-height: 100vh;
+				overflow-x: hidden;
+			}
+
+			body::before {
+				content: "";
+				position: fixed;
+				inset: 0;
+				background-image: repeating-linear-gradient(
+					0deg,
+					transparent,
+					transparent 3px,
+					rgba(255, 255, 255, 0.015) 3px,
+					rgba(255, 255, 255, 0.015) 4px
+				);
+				pointer-events: none;
+				z-index: 0;
+			}
+
+			.desk {
+				min-height: 100vh;
+				padding: 4rem 1.5rem 6rem;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				position: relative;
+				z-index: 1;
+			}
+
+			.scroll {
+				width: 100%;
+				max-width: 680px;
+				background: var(--parchment);
+				position: relative;
+				border-radius: 3px;
+				box-shadow:
+					0 2px 8px rgba(0, 0, 0, 0.25),
+					0 12px 40px rgba(0, 0, 0, 0.4),
+					0 40px 80px rgba(0, 0, 0, 0.3),
+					inset 0 0 80px rgba(160, 120, 60, 0.08);
+			}
+
+			.scroll-top {
+				width: 100%;
+				height: 48px;
+				background: linear-gradient(
+					to bottom,
+					var(--parchment-shadow),
+					var(--parchment)
+				);
+				border-radius: 3px 3px 0 0;
+				position: relative;
+				overflow: hidden;
+			}
+			.scroll-top::before {
+				content: "";
+				position: absolute;
+				left: 0;
+				right: 0;
+				top: 0;
+				height: 12px;
+				background: linear-gradient(
+					to bottom,
+					#c8b090,
+					var(--parchment-shadow)
+				);
+				border-radius: 3px 3px 0 0;
+			}
+			.scroll-top::after {
+				content: "";
+				position: absolute;
+				left: 10%;
+				right: 10%;
+				top: 8px;
+				height: 2px;
+				background: rgba(160, 120, 60, 0.2);
+				border-radius: 50%;
+				box-shadow: 0 4px 12px rgba(100, 70, 30, 0.15);
+			}
+
+			.scroll-bottom {
+				width: 100%;
+				height: 48px;
+				background: linear-gradient(
+					to top,
+					var(--parchment-shadow),
+					var(--parchment)
+				);
+				border-radius: 0 0 3px 3px;
+				position: relative;
+			}
+			.scroll-bottom::before {
+				content: "";
+				position: absolute;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				height: 12px;
+				background: linear-gradient(to top, #c8b090, var(--parchment-shadow));
+				border-radius: 0 0 3px 3px;
+			}
+
+			.letter-body {
+				padding: 3.5rem 4.5rem 4rem;
+				position: relative;
+				background-image: repeating-linear-gradient(
+					transparent,
+					transparent 35px,
+					rgba(160, 120, 80, 0.12) 35px,
+					rgba(160, 120, 80, 0.12) 36px
+				);
+				background-position: 0 52px;
+			}
+
+			@media (max-width: 600px) {
+				.letter-body {
+					padding: 2.5rem 2rem 3rem;
+				}
+			}
+
+			.letter-body::before {
+				content: "";
+				position: absolute;
+				left: 3.2rem;
+				top: 0;
+				bottom: 0;
+				width: 1px;
+				background: rgba(180, 100, 100, 0.15);
+			}
+
+			@media (max-width: 600px) {
+				.letter-body::before {
+					display: none;
+				}
+			}
+
+			.corner {
+				position: absolute;
+				width: 40px;
+				height: 40px;
+				opacity: 0.25;
+			}
+			.corner svg {
+				width: 100%;
+				height: 100%;
+			}
+			.corner.tl {
+				top: 56px;
+				left: 16px;
+			}
+			.corner.tr {
+				top: 56px;
+				right: 16px;
+				transform: scaleX(-1);
+			}
+			.corner.bl {
+				bottom: 56px;
+				left: 16px;
+				transform: scaleY(-1);
+			}
+			.corner.br {
+				bottom: 56px;
+				right: 16px;
+				transform: scale(-1);
+			}
+
+			.letter-date {
+				font-family: "Cinzel", serif;
+				font-size: 0.65rem;
+				letter-spacing: 0.3em;
+				color: var(--ink-faint);
+				text-align: right;
+				margin-bottom: 3rem;
+			}
+
+			.salutation {
+				font-size: 2.6rem;
+				font-style: italic;
+				font-weight: 300;
+				color: var(--ink);
+				margin-bottom: 2.5rem;
+				line-height: 1.2;
+			}
+
+			.letter-body p {
+				font-size: 1.22rem;
+				line-height: 2.05;
+				font-weight: 300;
+				color: var(--ink-soft);
+				margin-bottom: 1.8rem;
+				text-align: left;
+			}
+
+			.letter-body p.indent {
+				text-indent: 2.5rem;
+			}
+
+			.letter-body em {
+				font-style: italic;
+				color: var(--ink);
+				font-weight: 400;
+			}
+
+			.letter-body strong {
+				font-style: italic;
+				font-weight: 500;
+				color: var(--rose);
+			}
+
+			.pull {
+				text-align: center;
+				font-size: 1.6rem;
+				font-style: italic;
+				font-weight: 300;
+				color: var(--ink);
+				margin: 3rem 0;
+				padding: 2rem 1rem;
+				position: relative;
+				line-height: 1.7;
+			}
+			.pull::before,
+			.pull::after {
+				content: "";
+				display: block;
+				width: 60px;
+				height: 1px;
+				background: var(--gold-light);
+				margin: 0 auto;
+			}
+			.pull::before {
+				margin-bottom: 1.8rem;
+			}
+			.pull::after {
+				margin-top: 1.8rem;
+			}
+
+			.ornament {
+				text-align: center;
+				color: var(--gold);
+				font-size: 1.1rem;
+				margin: 2.5rem 0;
+				opacity: 0.6;
+				letter-spacing: 0.5em;
+			}
+
+			.divider {
+				display: flex;
+				align-items: center;
+				gap: 1rem;
+				margin: 3rem 0;
+				opacity: 0.35;
+			}
+			.divider::before,
+			.divider::after {
+				content: "";
+				flex: 1;
+				height: 1px;
+				background: var(--gold);
+			}
+			.divider span {
+				font-size: 0.8rem;
+				color: var(--gold);
+			}
+
+			.reasons {
+				margin: 2rem 0 2.5rem 1rem;
+				list-style: none;
+			}
+			.reasons li {
+				font-size: 1.18rem;
+				font-style: italic;
+				font-weight: 300;
+				color: var(--ink-soft);
+				line-height: 1.9;
+				padding-left: 1.8rem;
+				position: relative;
+				margin-bottom: 0.3rem;
+			}
+			.reasons li::before {
+				content: "—";
+				position: absolute;
+				left: 0;
+				color: var(--gold);
+				font-style: normal;
+			}
+
+			.ps {
+				font-family: "Cinzel", serif;
+				font-size: 0.62rem;
+				letter-spacing: 0.25em;
+				color: var(--ink-faint);
+				margin-top: 0.5rem;
+				margin-bottom: 0.6rem;
+			}
+			.ps-text {
+				font-size: 1.1rem !important;
+				font-style: italic;
+				color: var(--ink-faint) !important;
+				margin-bottom: 0.6rem !important;
+			}
+
+			.signature-block {
+				margin-top: 3.5rem;
+				text-align: right;
+			}
+			.closing-word {
+				font-size: 1.3rem;
+				font-style: italic;
+				font-weight: 300;
+				color: var(--ink-soft);
+				margin-bottom: 0.6rem;
+			}
+			.signature {
+				font-size: 3.2rem;
+				font-style: italic;
+				font-weight: 300;
+				color: var(--ink);
+				line-height: 1;
+				font-family: "Cormorant Garamond", cursive;
+				transform: rotate(-1.5deg);
+				display: inline-block;
+				margin-top: 0.3rem;
+			}
+
+			.seal-wrap {
+				text-align: center;
+				margin: 1rem 0 0;
+				padding-bottom: 0.5rem;
+			}
+			.seal {
+				display: inline-flex;
+				align-items: center;
+				justify-content: center;
+				width: 64px;
+				height: 64px;
+				border-radius: 50%;
+				background: radial-gradient(
+					circle at 38% 38%,
+					#c0384e,
+					var(--seal) 70%
+				);
+				box-shadow:
+					0 2px 6px rgba(100, 20, 30, 0.5),
+					0 0 0 2px rgba(140, 30, 50, 0.3),
+					inset 0 1px 3px rgba(255, 180, 180, 0.2);
+				animation: sealPulse 3s ease-in-out infinite;
+			}
+			@keyframes sealPulse {
+				0%,
+				100% {
+					box-shadow:
+						0 2px 6px rgba(100, 20, 30, 0.5),
+						0 0 0 2px rgba(140, 30, 50, 0.3),
+						inset 0 1px 3px rgba(255, 180, 180, 0.2);
+				}
+				50% {
+					box-shadow:
+						0 2px 12px rgba(150, 30, 50, 0.6),
+						0 0 0 4px rgba(140, 30, 50, 0.2),
+						inset 0 1px 3px rgba(255, 180, 180, 0.2);
+				}
+			}
+			.seal svg {
+				width: 32px;
+				height: 32px;
+			}
+
+			.scroll {
+				opacity: 0;
+				transform: translateY(30px);
+				animation: scrollReveal 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.2s
+					forwards;
+			}
+			@keyframes scrollReveal {
+				to {
+					opacity: 1;
+					transform: translateY(0);
+				}
+			}
+
+			.letter-body > * {
+				opacity: 0;
+				animation: lineIn 0.8s ease forwards;
+			}
+			.letter-body > *:nth-child(1) {
+				animation-delay: 0.6s;
+			}
+			.letter-body > *:nth-child(2) {
+				animation-delay: 0.75s;
+			}
+			.letter-body > *:nth-child(3) {
+				animation-delay: 0.9s;
+			}
+			.letter-body > *:nth-child(4) {
+				animation-delay: 1s;
+			}
+			.letter-body > *:nth-child(5) {
+				animation-delay: 1.1s;
+			}
+			.letter-body > *:nth-child(6) {
+				animation-delay: 1.2s;
+			}
+			.letter-body > *:nth-child(7) {
+				animation-delay: 1.3s;
+			}
+			.letter-body > *:nth-child(8) {
+				animation-delay: 1.35s;
+			}
+			.letter-body > *:nth-child(9) {
+				animation-delay: 1.4s;
+			}
+			.letter-body > *:nth-child(10) {
+				animation-delay: 1.45s;
+			}
+			.letter-body > *:nth-child(11) {
+				animation-delay: 1.5s;
+			}
+			.letter-body > *:nth-child(12) {
+				animation-delay: 1.55s;
+			}
+			.letter-body > *:nth-child(13) {
+				animation-delay: 1.6s;
+			}
+			.letter-body > *:nth-child(14) {
+				animation-delay: 1.65s;
+			}
+			.letter-body > *:nth-child(15) {
+				animation-delay: 1.7s;
+			}
+			.letter-body > *:nth-child(16) {
+				animation-delay: 1.75s;
+			}
+			.letter-body > *:nth-child(17) {
+				animation-delay: 1.8s;
+			}
+			.letter-body > *:nth-child(18) {
+				animation-delay: 1.85s;
+			}
+			.letter-body > *:nth-child(19) {
+				animation-delay: 1.9s;
+			}
+			.letter-body > *:nth-child(20) {
+				animation-delay: 1.95s;
+			}
+			.letter-body > *:nth-child(n + 21) {
+				animation-delay: 2s;
+			}
+
+			@keyframes lineIn {
+				from {
+					opacity: 0;
+					transform: translateY(12px);
+				}
+				to {
+					opacity: 1;
+					transform: translateY(0);
+				}
+			}
+
+			.back-link {
+				margin-top: 3rem;
+				opacity: 0;
+				animation: lineIn 0.8s ease 2.4s forwards;
+			}
+			.back-link a {
+				font-family: "Cinzel", serif;
+				font-size: 0.62rem;
+				letter-spacing: 0.3em;
+				color: rgba(255, 255, 255, 0.25);
+				text-decoration: none;
+				transition: color 0.3s ease;
+			}
+			.back-link a:hover {
+				color: rgba(255, 255, 255, 0.55);
+			}
+		</style>
+	</head>
+	<body>
+		<div class="desk">
+			<div class="scroll">
+				<div class="scroll-top"></div>
+
+				<div class="corner tl">
+					<svg
+						viewBox="0 0 40 40"
+						fill="none"
+						xmlns="http://www.w3.org/2000/svg"
+					>
+						<path
+							d="M2 38 C2 20 20 2 38 2"
+							stroke="#9a7a42"
+							stroke-width="1.5"
+							fill="none"
+						/>
+						<path
+							d="M2 38 C2 28 12 18 22 8"
+							stroke="#9a7a42"
+							stroke-width="0.8"
+							fill="none"
+							opacity="0.5"
+						/>
+						<circle cx="2" cy="38" r="2" fill="#9a7a42" />
+						<circle cx="38" cy="2" r="2" fill="#9a7a42" />
+					</svg>
+				</div>
+				<div class="corner tr">
+					<svg
+						viewBox="0 0 40 40"
+						fill="none"
+						xmlns="http://www.w3.org/2000/svg"
+					>
+						<path
+							d="M2 38 C2 20 20 2 38 2"
+							stroke="#9a7a42"
+							stroke-width="1.5"
+							fill="none"
+						/>
+						<path
+							d="M2 38 C2 28 12 18 22 8"
+							stroke="#9a7a42"
+							stroke-width="0.8"
+							fill="none"
+							opacity="0.5"
+						/>
+						<circle cx="2" cy="38" r="2" fill="#9a7a42" />
+						<circle cx="38" cy="2" r="2" fill="#9a7a42" />
+					</svg>
+				</div>
+				<div class="corner bl">
+					<svg
+						viewBox="0 0 40 40"
+						fill="none"
+						xmlns="http://www.w3.org/2000/svg"
+					>
+						<path
+							d="M2 38 C2 20 20 2 38 2"
+							stroke="#9a7a42"
+							stroke-width="1.5"
+							fill="none"
+						/>
+						<circle cx="2" cy="38" r="2" fill="#9a7a42" />
+						<circle cx="38" cy="2" r="2" fill="#9a7a42" />
+					</svg>
+				</div>
+				<div class="corner br">
+					<svg
+						viewBox="0 0 40 40"
+						fill="none"
+						xmlns="http://www.w3.org/2000/svg"
+					>
+						<path
+							d="M2 38 C2 20 20 2 38 2"
+							stroke="#9a7a42"
+							stroke-width="1.5"
+							fill="none"
+						/>
+						<circle cx="2" cy="38" r="2" fill="#9a7a42" />
+						<circle cx="38" cy="2" r="2" fill="#9a7a42" />
+					</svg>
+				</div>
+
+				<div class="letter-body">
+					<p class="letter-date">
+						April 23, 2026 &nbsp;·&nbsp; Three years to the day
+					</p>
+
+					<p class="salutation">My Kannamma,</p>
+
+					<p class="indent">
+						Three years ago today, you shifted something inside me. I couldn't
+						put it into words at the time — I don't think I had the words for it
+						yet — but the moment I knew you had come to the Mela for me, I
+						<em>felt</em> it. Like my whole world had just realigned itself in
+						the best way. And when we chose each other for real, everything
+						started to make sense. A kind of sense I hadn't known I was waiting
+						for.
+					</p>
+
+					<p class="indent">
+						Loving you has never once felt like effort. Not for a single day. It
+						has truly felt like I was discovering parts of myself I didn't even
+						know I was missing — like you walked in and turned on lights in
+						rooms I didn't know existed in me. I'm still in awe of that. I'm
+						still in awe of <em>you</em>. In the way you think, in the way you
+						care, in the way you exist so fully and so beautifully as yourself.
+						You've changed me in ways I couldn't have ever expected, and I am so
+						eternally, endlessly grateful for you.
+					</p>
+
+					<div class="pull">
+						Your simple presence<br />
+						gives me a calm<br />
+						<em>that cannot be described in words.</em>
+					</div>
+
+					<p class="indent">
+						I think about what it means to truly <em>know</em> someone. Not just
+						the easy parts, but all of it — the fears, the history, the parts we
+						don't always show. You know me more inside out than anyone ever has.
+						And still, every time, you stay. You show up. You make me feel safe
+						and cared for and completely myself, without hesitation or fear of
+						being judged. That is the rarest kind of gift. I don't take a single
+						second of it for granted.
+					</p>
+
+					<p class="indent">
+						You have a way of making my days better without even trying. Talking
+						to you feels so natural, every single time — like I can come to you
+						with anything, the most random thoughts, the most serious things, or
+						even nothing at all, and somehow you always know exactly how to make
+						me smile. You are such a rare kind of comfort. Being around you just
+						feels <em>right</em>, in a way that's hard to explain. Warm and
+						calm, everything falling into place without effort. Even the most
+						ordinary moments feel special when you're part of them.
+					</p>
+
+					<div class="divider"><span>✦</span></div>
+
+					<p>
+						There is so much I want you to hear today, so let me just say it
+						clearly:
+					</p>
+
+					<ul class="reasons">
+						<li>
+							You bring so much light and hope and peace and warmth into my
+							life, and I truly don't think I could ever put into words how much
+							I appreciate and care for you.
+						</li>
+						<li>
+							Your dedication to everything you do — your school work, your
+							goals, everything in between — puts me in complete awe every
+							single day. I am so incredibly proud of the woman you are and the
+							future you are building.
+						</li>
+						<li>
+							The way you love — quietly, steadily, without ever asking for
+							anything in return — is one of the most beautiful things I have
+							ever been close to.
+						</li>
+						<li>
+							You make me feel full. Like there is nothing missing when I'm with
+							you. You make me genuinely happy in a deep, steady kind of way
+							that doesn't come and go.
+						</li>
+						<li>
+							You are not hard to love. Anyone who has ever made you feel that
+							way was wrong. I love you purely and unconditionally and entirely
+							by choice — and I would choose it again every single time.
+						</li>
+					</ul>
+
+					<div class="pull">
+						You are my comfort,<br />my courage, my safest place.<br />
+						<em>My home.</em>
+					</div>
+
+					<p class="indent">
+						I think about everything that is still ahead of us and I feel this
+						enormous, overwhelming warmth. So many memories we haven't made yet.
+						So many simple moments I can't wait to share with you. Every memory
+						we're yet to make, all the ways we'll keep growing together — I want
+						all of it, every single piece of it, with you and only you. I don't
+						want that with anyone else. I am so so so grateful for every moment
+						we get to spend together, and for the way you make my world so much
+						better just by being in it.
+					</p>
+
+					<p class="indent">
+						I want to grow with you. I want to keep becoming stronger with you
+						and keep building something real and lasting with you — not just for
+						now, but for everything that comes next. In this life and every life
+						after that. I mean that with everything I have.
+					</p>
+
+					<div class="ornament">· · ·</div>
+
+					<p class="indent">
+						So here is what I need you to know today, on this third year of the
+						most important thing in my life: <strong>I love you.</strong> I love
+						you more deeply than I knew I could love anything, and more with
+						each passing day. I love you in the ordinary moments and the hard
+						ones, when you're at your highest and especially at your saddest. I
+						love the parts of you that you think are imperfections. I love every
+						single part of you, and I am so eternally proud to be your man, your
+						sweet boy, your Kannayya.
+					</p>
+
+					<p class="indent">
+						Thank you for being you. That absolutely amazing, spectacular, rare,
+						irreplaceable person that you are. Thank you for choosing me. Thank
+						you for every moment, every laugh, and every quiet second that had
+						the power to mean everything to me.
+					</p>
+
+					<p>
+						I love you so so very much, my wonderful Kanna. With my whole and
+						full heart, which grows infinitely for you — I can't wait to see
+						where we go, in this and beyond.
+					</p>
+
+					<div class="signature-block">
+						<p class="closing-word">Forever yours, with everything I have —</p>
+						<span class="signature">your sweet boy ♥</span>
+					</div>
+
+					<div class="divider" style="margin-top: 3.5rem"><span>✦</span></div>
+
+					<p class="ps">P.S.</p>
+					<p class="ps-text">
+						I'm not going anywhere. I'm right here, every single moment, right
+						by your side. I know you know that. But I'll keep saying it anyway.
+					</p>
+
+					<p class="ps" style="margin-top: 1.2rem">P.P.S.</p>
+					<p class="ps-text">
+						If you're reading this while doing six other things at once — I see
+						you, I'm cheering you on louder than you know, and I am so so so
+						incredibly proud of you. Okay. Continuing.
+					</p>
+
+					<p class="ps" style="margin-top: 1.2rem">P.P.P.S.</p>
+					<p class="ps-text">
+						I really really like you. Like a genuinely embarrassing amount. Like
+						so so so soooooo much. I can't wait to give you a huge huge hugeee
+						hug. I love you, kannaaaaaaa..!
+					</p>
+				</div>
+
+				<div class="seal-wrap">
+					<div class="seal">
+						<svg
+							viewBox="0 0 32 32"
+							fill="none"
+							xmlns="http://www.w3.org/2000/svg"
+						>
+							<path
+								d="M16 6C16 6 9 11 9 17.5C9 21.09 12.13 24 16 24C19.87 24 23 21.09 23 17.5C23 11 16 6 16 6Z"
+								fill="rgba(255,200,200,0.3)"
+								stroke="rgba(255,220,220,0.6)"
+								stroke-width="0.8"
+							/>
+							<path
+								d="M16 9C16 9 11 13.5 11 18C11 20.76 13.24 23 16 23C18.76 23 21 20.76 21 18C21 13.5 16 9 16 9Z"
+								fill="rgba(255,180,180,0.2)"
+							/>
+						</svg>
+					</div>
+				</div>
+
+				<div class="scroll-bottom"></div>
+			</div>
+
+			<div class="back-link">
+				<a href="index.html">&#8592; back to the beginning</a>
+			</div>
+		</div>
+	</body>
+</html>
